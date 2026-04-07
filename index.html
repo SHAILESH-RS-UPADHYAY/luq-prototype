@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LÜQ — A Quiet Presence</title>
+    <meta name="description" content="LÜQ is a quiet, emotion-aware character that responds to how you feel.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="atmosphere">
+        <canvas id="particle-canvas"></canvas>
+    </div>
+
+    <main id="luq-world">
+        <div id="luq-container">
+            <div id="luq-aura"></div>
+            <div id="luq-body">
+                <div id="luq-eye-left" class="luq-eye"></div>
+                <div id="luq-eye-right" class="luq-eye"></div>
+                <div id="luq-mouth"></div>
+            </div>
+        </div>
+        <div id="luq-whisper"></div>
+    </main>
+
+    <div id="input-area">
+        <input type="text" id="feeling-input" placeholder="tell me how you feel..." autocomplete="off" spellcheck="false">
+        <div id="input-hint">press enter to share</div>
+    </div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

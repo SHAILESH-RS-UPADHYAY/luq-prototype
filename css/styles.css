@@ -1,0 +1,325 @@
+/* ===========================================
+   LÜQ — A Quiet Presence
+   Visual language for an emotion-aware character
+   =========================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap');
+
+/* --- Design Tokens (mood-reactive via JS) --- */
+:root {
+    --bg-color: #0a0a0f;
+    --glow-color: rgba(139, 157, 195, 0.25);
+    --glow-solid: #8b9dc3;
+    --body-color: #d0d5e2;
+    --body-highlight: #e8eaf6;
+    --body-shadow: #9fa8c5;
+    --eye-color: #2c3e50;
+    --whisper-color: #8b9dc3;
+    --transition-speed: 2s;
+    --luq-size: 160px;
+    --eye-size: 12px;
+    --aura-size: 320px;
+}
+
+/* --- Reset --- */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: rgba(255, 255, 255, 0.7);
+    transition: background-color var(--transition-speed) ease;
+    cursor: default;
+    user-select: none;
+}
+
+/* --- Atmosphere --- */
+#atmosphere {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+#particle-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* --- Main Stage --- */
+#luq-world {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    padding-bottom: 120px;
+}
+
+/* --- LÜQ Container --- */
+#luq-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: luq-entrance 2.5s cubic-bezier(0.23, 1, 0.32, 1) 0.8s forwards;
+}
+
+@keyframes luq-entrance {
+    0%   { opacity: 0; transform: scale(0.4) translateY(30px); }
+    60%  { opacity: 0.8; transform: scale(1.05) translateY(-5px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* --- Aura (soft glow behind body) --- */
+#luq-aura {
+    position: absolute;
+    width: var(--aura-size);
+    height: var(--aura-size);
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
+    filter: blur(40px);
+    transition: background var(--transition-speed) ease;
+    animation: aura-breathe 4s ease-in-out infinite;
+}
+
+@keyframes aura-breathe {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50%      { transform: scale(1.12); opacity: 0.75; }
+}
+
+/* --- LÜQ Body (the living blob) --- */
+#luq-body {
+    width: var(--luq-size);
+    height: var(--luq-size);
+    background: radial-gradient(
+        circle at 35% 35%,
+        var(--body-highlight) 0%,
+        var(--body-color) 50%,
+        var(--body-shadow) 100%
+    );
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    position: relative;
+    box-shadow:
+        0 0 40px var(--glow-color),
+        0 0 80px var(--glow-color),
+        inset 0 -10px 30px rgba(0,0,0,0.08);
+    transition:
+        background var(--transition-speed) ease,
+        box-shadow var(--transition-speed) ease;
+    animation:
+        morph 8s ease-in-out infinite,
+        float 6s ease-in-out infinite;
+}
+
+/* Organic shape-shifting */
+@keyframes morph {
+    0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+    25%      { border-radius: 40% 60% 70% 30% / 30% 70% 40% 60%; }
+    50%      { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+    75%      { border-radius: 70% 30% 40% 60% / 60% 40% 70% 30%; }
+}
+
+/* Idle floating */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50%      { transform: translateY(-15px); }
+}
+
+/* --- Eyes --- */
+.luq-eye {
+    width: var(--eye-size);
+    height: var(--eye-size);
+    background: var(--eye-color);
+    border-radius: 50%;
+    position: absolute;
+    top: 42%;
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    animation: blink 5s ease-in-out infinite;
+}
+
+#luq-eye-left  { left: 33%; }
+#luq-eye-right { right: 33%; }
+
+@keyframes blink {
+    0%, 90%, 100% { transform: scaleY(1); }
+    94%           { transform: scaleY(0.05); }
+    96%           { transform: scaleY(1); }
+}
+
+/* --- Mouth --- */
+#luq-mouth {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 4px;
+    background: var(--eye-color);
+    border-radius: 4px;
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    opacity: 0.6;
+}
+
+/* --- Mood-Based Body Animations --- */
+.body-bounce {
+    animation: morph 8s ease-in-out infinite, bounce-mood 1.2s ease-in-out infinite !important;
+}
+.body-slow-drift {
+    animation: morph 12s ease-in-out infinite, slow-drift 8s ease-in-out infinite !important;
+}
+.body-gentle-pulse {
+    animation: morph 8s ease-in-out infinite, gentle-pulse 5s ease-in-out infinite !important;
+}
+.body-tremble {
+    animation: morph 8s ease-in-out infinite, float 6s ease-in-out infinite, tremble 0.25s ease-in-out infinite !important;
+}
+.body-shake {
+    animation: morph 8s ease-in-out infinite, float 6s ease-in-out infinite, shake 0.4s ease-in-out infinite !important;
+}
+.body-gentle-sway {
+    animation: morph 8s ease-in-out infinite, gentle-sway 4s ease-in-out infinite !important;
+}
+
+@keyframes bounce-mood {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-22px); }
+}
+
+@keyframes slow-drift {
+    0%, 100% { transform: translateY(0) translateX(0); }
+    33%      { transform: translateY(-8px) translateX(-6px); }
+    66%      { transform: translateY(-4px) translateX(6px); }
+}
+
+@keyframes gentle-pulse {
+    0%, 100% { transform: scale(1) translateY(0); }
+    50%      { transform: scale(1.04) translateY(-10px); }
+}
+
+@keyframes tremble {
+    0%, 100% { transform: translateX(0); }
+    25%      { transform: translateX(-2px); }
+    75%      { transform: translateX(2px); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%      { transform: translateX(-4px); }
+    40%      { transform: translateX(4px); }
+    60%      { transform: translateX(-3px); }
+    80%      { transform: translateX(3px); }
+}
+
+@keyframes gentle-sway {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25%      { transform: translateY(-10px) rotate(-2deg); }
+    75%      { transform: translateY(-5px) rotate(2deg); }
+}
+
+/* --- Whisper Text --- */
+#luq-whisper {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--whisper-color);
+    text-align: center;
+    margin-top: 45px;
+    min-height: 2em;
+    opacity: 0;
+    transition: color var(--transition-speed) ease, opacity 0.8s ease;
+    letter-spacing: 0.06em;
+}
+
+#luq-whisper.visible {
+    opacity: 1;
+}
+
+/* --- Input Area --- */
+#input-area {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px 45px;
+    z-index: 2;
+    opacity: 0;
+    animation: fade-up 1.5s ease-out 3.2s forwards;
+}
+
+@keyframes fade-up {
+    0%   { opacity: 0; transform: translateY(15px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+#feeling-input {
+    width: 100%;
+    max-width: 460px;
+    padding: 16px 28px;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 40px;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 300;
+    letter-spacing: 0.03em;
+    outline: none;
+    transition: all 0.5s ease;
+}
+
+#feeling-input::placeholder {
+    color: rgba(255, 255, 255, 0.18);
+    font-style: italic;
+}
+
+#feeling-input:focus {
+    border-color: rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.055);
+    box-shadow: 0 0 40px rgba(139, 157, 195, 0.08);
+}
+
+#input-hint {
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.12);
+    margin-top: 12px;
+    letter-spacing: 0.12em;
+    text-transform: lowercase;
+    transition: opacity 0.5s ease;
+}
+
+/* --- Responsive --- */
+@media (max-width: 600px) {
+    :root {
+        --luq-size: 120px;
+        --aura-size: 240px;
+        --eye-size: 9px;
+    }
+
+    #luq-whisper {
+        font-size: 1.1rem;
+        margin-top: 30px;
+        padding: 0 20px;
+    }
+
+    #feeling-input {
+        max-width: 85%;
+        font-size: 0.88rem;
+        padding: 14px 22px;
+    }
+}
