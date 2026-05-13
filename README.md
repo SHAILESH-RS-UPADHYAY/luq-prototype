@@ -25,6 +25,7 @@ Simply open `index.html` in your browser, or run a local static server:
 ```bash
 npx serve .
 ```
-[Visit Live Site](https://shailesh-rs-upadhyay.github.io/luq-prototype/)
+[![Deploy](https://shields.io🚀%20Open%20Prototype-black?style=for-the-badge)](https://shailesh-rs-upadhyay.github.io/luq-prototype/)
+
 ---
 *Created by Shailesh Upadhyay*
