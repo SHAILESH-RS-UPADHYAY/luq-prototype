@@ -1,3 +1,5 @@
+<p align="center"><img src=".github/logo.svg" width="88" height="88" alt="LÜQ logo"></p>
+
 # LÜQ — A Quiet Presence
 
 > *An emotion-aware character that responds not with words, but with presence.*
