@@ -6,6 +6,13 @@
 
 LÜQ is an exploratory prototype designed to interpret emotional sentiment from text input and react visually through atmospheric shifts, organic shape morphing, and brief, poetic "whispers". 
 
+<picture>
+  <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset="https://shailesh-stats.vercel.app/api/plate?name=repo&amp;repo=luq-prototype&amp;theme=dark&amp;w=m">
+  <source media="(max-width: 600px)" srcset="https://shailesh-stats.vercel.app/api/plate?name=repo&amp;repo=luq-prototype&amp;theme=light&amp;w=m">
+  <source media="(prefers-color-scheme: dark)" srcset="https://shailesh-stats.vercel.app/api/plate?name=repo&amp;repo=luq-prototype&amp;theme=dark">
+  <img src="https://shailesh-stats.vercel.app/api/plate?name=repo&amp;repo=luq-prototype&amp;theme=light" width="100%" alt="Commits per week and languages for LÜQ, drawn live from GitHub.">
+</picture>
+
 ## 🧠 Core Philosophy
 Built on the principle of **"feeling over features"**, LÜQ is not a standard chatbot. It does not argue, converse, or offer solutions. It simply reads the emotional tone of the user's input and attempts to make them feel understood.
 
